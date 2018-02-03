@@ -1,11 +1,9 @@
 package com.jaredrummler.baking.image;
 
+import android.support.annotation.Nullable;
 import com.jaredrummler.baking.data.model.Recipe;
 import com.jaredrummler.baking.data.model.Step;
-
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class VideoThumbnail {
 
