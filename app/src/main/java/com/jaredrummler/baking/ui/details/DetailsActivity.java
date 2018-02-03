@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.jaredrummler.baking.R;
 import com.jaredrummler.baking.data.model.Recipe;
+import com.jaredrummler.baking.data.model.Step;
 import com.jaredrummler.baking.image.GlideApp;
 import com.jaredrummler.baking.image.VideoThumbnail;
 import com.jaredrummler.baking.ui.steps.StepsFragment;
@@ -77,16 +78,21 @@ public class DetailsActivity extends AppCompatActivity {
         setIngredientsAmount(recipe);
         setServingsAmount(recipe);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_directions, DetailsFragment.newInstance(recipe))
-                .commit();
-
-        if (findViewById(R.id.fragment_steps) != null) {
+        if (getSupportFragmentManager().findFragmentById(R.id.fragment_directions) == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_steps, StepsFragment.newInstance(recipe.getSteps().get(0)))
+                    .add(R.id.fragment_directions, DetailsFragment.newInstance(recipe))
                     .commit();
+        }
+
+        if (findViewById(R.id.fragment_steps) != null) {
+            if (getSupportFragmentManager().findFragmentById(R.id.fragment_steps) == null) {
+                Step step = recipe.getSteps().get(0);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragment_steps, StepsFragment.newInstance(step))
+                        .commit();
+            }
         }
     }
 
