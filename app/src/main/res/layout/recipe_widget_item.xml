@@ -1,0 +1,13 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/background_light"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:fontFamily="@font/lato"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    tools:text="4 grams of cocaine" />

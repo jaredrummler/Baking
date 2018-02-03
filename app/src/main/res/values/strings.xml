@@ -1,0 +1,40 @@
+<resources>
+    <!-- Labels -->
+    <eat-comment />
+    <string name="app_name">Baking</string>
+    <string name="recipe_picker">Recipe Picker</string>
+
+    <!-- Titles -->
+    <eat-comment />
+    <string name="steps">Steps</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="servings">Servings</string>
+
+    <!-- Subtitles -->
+    <eat-comment />
+    <string name="step_subtitle">Step %d/%d</string>
+    <string name="introduction">Introduction</string>
+
+    <!-- Buttons -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="share">Share</string>
+
+    <!-- Error messages -->
+    <eat-comment />
+    <string name="error_message">Something went wrong!\nWhere\'s Jon Skeet when you need him?</string>
+    <string name="error_title">Oops! Umm...</string>
+
+    <!-- Content descriptions -->
+    <eat-comment />
+    <string name="cont_desc_video_thumb">Recipe video thumbnail</string>
+    <string name="desc_recipe_image">Recipe video thumbnail</string>
+    <string name="desc_recipe_video">Recipe video</string>
+
+    <!-- Widget -->
+    <eat-comment />
+    <string name="add_widget">Add widget</string>
+    <string name="select_recipe_for_widget">Please select a recipe for the widget</string>
+
+
+</resources>

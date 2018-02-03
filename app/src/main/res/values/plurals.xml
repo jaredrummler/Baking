@@ -1,0 +1,28 @@
+<resources>
+    <!-- Units -->
+    <eat-comment />
+    <plurals name="cups">
+        <item quantity="one">cup</item>
+        <item quantity="other">cups</item>
+    </plurals>
+    <plurals name="grams">
+        <item quantity="one">gram</item>
+        <item quantity="other">grams</item>
+    </plurals>
+    <plurals name="teaspoons">
+        <item quantity="one">teaspoon</item>
+        <item quantity="other">teaspoons</item>
+    </plurals>
+    <plurals name="tablespoons">
+        <item quantity="one">tablespoon</item>
+        <item quantity="other">tablespoons</item>
+    </plurals>
+    <plurals name="onces">
+        <item quantity="one">once</item>
+        <item quantity="other">onces</item>
+    </plurals>
+    <plurals name="kilogram">
+        <item quantity="one">kilogram</item>
+        <item quantity="other">kilograms</item>
+    </plurals>
+</resources>
