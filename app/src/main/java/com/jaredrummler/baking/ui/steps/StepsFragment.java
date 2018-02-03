@@ -34,6 +34,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
 
     private static final String EXTRA_STEP = "extras.STEP";
     private static final String STATE_SEEK_POS = "state.SEEK_POS";
+    private static final String STATE_PLAY_WHEN_READY = "state.PLAY_WHEN_READY";
 
     @BindView(R.id.player)
     SimpleExoPlayerView playerView;
@@ -53,7 +54,8 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     private MediaSessionCompat mediaSession;
     private MediaPlayer player;
     private Step step;
-    private long seekPos;
+    private long seekPos = 0;
+    private boolean playWhenReady = true;
 
     public static StepsFragment newInstance(Step step) {
         StepsFragment fragment = new StepsFragment();
@@ -93,6 +95,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
                              @Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             seekPos = savedInstanceState.getLong(STATE_SEEK_POS, 0);
+            playWhenReady = savedInstanceState.getBoolean(STATE_PLAY_WHEN_READY, true);
         }
 
         View view = inflater.inflate(R.layout.fragment_steps, container, false);
@@ -106,6 +109,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
             playerView.setVisibility(View.VISIBLE);
             player.play(Uri.parse(videoUrl));
             playerView.setPlayer(player.getPlayer());
+            if (!playWhenReady) player.getPlayer().setPlayWhenReady(playWhenReady);
         } else if (!TextUtils.isEmpty(step.getThumbnailURL())) {
             thumbnailImage.setVisibility(View.VISIBLE);
             GlideApp.with(getActivity())
@@ -134,12 +138,14 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     public void onPause() {
         super.onPause();
         seekPos = player.getPlayer().getCurrentPosition();
+        playWhenReady = player.getPlayer().getPlayWhenReady();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STATE_SEEK_POS, seekPos);
+        outState.putBoolean(STATE_PLAY_WHEN_READY, playWhenReady);
     }
 
     @Override

@@ -33,18 +33,6 @@ public class MediaPlayer {
         this.player = createPlayer();
     }
 
-    public void prepare(Uri uri) {
-        if (!uri.equals(this.uri)) {
-            String userAgent = Util.getUserAgent(context, context.getPackageName());
-            DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, userAgent);
-            ExtractorMediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                    .setExtractorsFactory(new DefaultExtractorsFactory())
-                    .createMediaSource(uri);
-            player.prepare(mediaSource);
-            this.uri = uri;
-        }
-    }
-
     public void play(Uri uri) {
         prepare(uri);
         player.setPlayWhenReady(true);
@@ -67,6 +55,18 @@ public class MediaPlayer {
 
     public void seekTo(long position) {
         player.seekTo(position);
+    }
+
+    private void prepare(Uri uri) {
+        if (!uri.equals(this.uri)) {
+            String userAgent = Util.getUserAgent(context, context.getPackageName());
+            DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, userAgent);
+            ExtractorMediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .setExtractorsFactory(new DefaultExtractorsFactory())
+                    .createMediaSource(uri);
+            player.prepare(mediaSource);
+            this.uri = uri;
+        }
     }
 
     public MediaSessionCallback getCallback() {
