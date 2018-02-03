@@ -30,11 +30,11 @@
     <string name="cont_desc_video_thumb">Recipe video thumbnail</string>
     <string name="desc_recipe_image">Recipe video thumbnail</string>
     <string name="desc_recipe_video">Recipe video</string>
+    <string name="desc_thumbnail">Thumbnail</string>
 
     <!-- Widget -->
     <eat-comment />
     <string name="add_widget">Add widget</string>
     <string name="select_recipe_for_widget">Please select a recipe for the widget</string>
-
 
 </resources>

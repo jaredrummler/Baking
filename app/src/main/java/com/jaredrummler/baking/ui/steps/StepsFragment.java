@@ -11,11 +11,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.jaredrummler.baking.R;
 import com.jaredrummler.baking.data.model.Step;
+import com.jaredrummler.baking.image.GlideApp;
 import com.jaredrummler.baking.media.MediaPlayer;
 import com.jaredrummler.baking.utils.RecipeUtils;
 
@@ -35,10 +37,16 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
 
     @BindView(R.id.player)
     SimpleExoPlayerView playerView;
+
+    @BindView(R.id.thumbnail)
+    ImageView thumbnailImage;
+
     @BindView(R.id.tv_short_desc)
     TextView shortDescText;
+
     @BindView(R.id.tv_description)
     TextView descText;
+
     @BindBool(R.bool.isTablet)
     boolean isTablet;
 
@@ -92,10 +100,17 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
 
         step = getArguments().getParcelable(EXTRA_STEP);
 
-        if (!TextUtils.isEmpty(step.getVideoURL())) {
+        String videoUrl = RecipeUtils.getVideoUrl(step);
+
+        if (!TextUtils.isEmpty(videoUrl)) {
             playerView.setVisibility(View.VISIBLE);
-            player.play(Uri.parse(step.getVideoURL()));
+            player.play(Uri.parse(videoUrl));
             playerView.setPlayer(player.getPlayer());
+        } else if (!TextUtils.isEmpty(step.getThumbnailURL())) {
+            thumbnailImage.setVisibility(View.VISIBLE);
+            GlideApp.with(getActivity())
+                    .load(step.getThumbnailURL())
+                    .into(thumbnailImage);
         }
 
         if (shortDescText != null) {
@@ -142,7 +157,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     }
 
     private void makePlayerFullscreen() {
-        if (TextUtils.isEmpty(step.getVideoURL())) return;
+        if (TextUtils.isEmpty(RecipeUtils.getVideoUrl(step))) return;
         // Expand the view
         playerView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
         // Hide the other content

@@ -2,6 +2,8 @@ package com.jaredrummler.baking.utils;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.jaredrummler.baking.App;
 import com.jaredrummler.baking.R;
@@ -93,6 +95,25 @@ public class RecipeUtils {
 
     public static boolean isIntoStep(@NonNull Step step) {
         return "recipe introduction".equalsIgnoreCase(step.getShortDescription());
+    }
+
+    /**
+     * Get the video URL from a step
+     *
+     * @param step The step
+     * @return The video URL or {@code null} if no video URL exists for this step
+     */
+    @Nullable
+    public static String getVideoUrl(@NonNull Step step) {
+        if (!TextUtils.isEmpty(step.getVideoURL())) {
+            return step.getVideoURL();
+        } else if (!TextUtils.isEmpty(step.getThumbnailURL())) {
+            if (step.getThumbnailURL().toLowerCase().endsWith(".mp4")) {
+                // Why do we have a video as a thumbnail image??
+                return step.getThumbnailURL();
+            }
+        }
+        return null;
     }
 
 }

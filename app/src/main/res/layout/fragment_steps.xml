@@ -5,21 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/player"
+    <FrameLayout
+        android:id="@+id/media"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:resize_mode="fixed_height"
-        tools:visibility="visible" />
+        android:layout_height="wrap_content">
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/player"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="gone"
+            app:resize_mode="fixed_height"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="gone"
+            tools:src="@drawable/bg_recipe_placeholder"
+            tools:visibility="gone"
+            android:contentDescription="@string/desc_thumbnail" />
+
+    </FrameLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/player">
+        android:layout_below="@id/media">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
