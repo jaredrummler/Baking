@@ -2,6 +2,8 @@
 
 A project for the [Udacity Nanodegree Program](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801).
 
+![DEMO](demo.gif)
+
 ## Libraries
 
 * [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/index.html)
