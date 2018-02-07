@@ -67,7 +67,7 @@ final class DetailsViewHolder extends RecyclerView.ViewHolder {
         }
         // Set the step info
         findView(R.id.iv_video).setVisibility(
-                TextUtils.isEmpty(RecipeUtils.getVideoUrl(step)) ? View.GONE : View.VISIBLE);
+                TextUtils.isEmpty(step.getVideoURL()) ? View.GONE : View.VISIBLE);
         ((TextView) itemView.findViewById(R.id.tv_step_desc)).setText(step.getShortDescription());
         // If the first step is the instructions then increase the step by 1
         boolean isFirstStepIntro = "recipe introduction".equalsIgnoreCase(

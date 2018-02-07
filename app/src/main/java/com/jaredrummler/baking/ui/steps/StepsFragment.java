@@ -203,7 +203,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     }
 
     private void makePlayerFullscreen() {
-        if (TextUtils.isEmpty(RecipeUtils.getVideoUrl(step))) return;
+        if (TextUtils.isEmpty(step.getVideoURL())) return;
         // Expand the view
         playerView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
         // Hide the other content
