@@ -57,7 +57,7 @@ public class MediaPlayer {
         player.seekTo(position);
     }
 
-    private void prepare(Uri uri) {
+    public void prepare(Uri uri) {
         if (!uri.equals(this.uri)) {
             String userAgent = Util.getUserAgent(context, context.getPackageName());
             DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(context, userAgent);

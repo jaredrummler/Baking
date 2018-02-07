@@ -1,6 +1,7 @@
 package com.jaredrummler.baking.ui.steps;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,26 +67,41 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     }
 
     @Override
-    public void onStop() {
-        player.stop();
-        super.onStop();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        step = getArguments().getParcelable(EXTRA_STEP);
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        player = new MediaPlayer(getActivity(), this);
-        mediaSession = new MediaSessionCompat(getContext(), TAG);
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mediaSession.setMediaButtonReceiver(null);
-        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY |
-                        PlaybackStateCompat.ACTION_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                        PlaybackStateCompat.ACTION_PLAY_PAUSE);
-        mediaSession.setPlaybackState(stateBuilder.build());
-        mediaSession.setCallback(player.getCallback());
+    public void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            initializePlayer();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            initializePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            releasePlayer();
+        }
     }
 
     @Nullable
@@ -97,26 +113,23 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
             seekPos = savedInstanceState.getLong(STATE_SEEK_POS, 0);
             playWhenReady = savedInstanceState.getBoolean(STATE_PLAY_WHEN_READY, true);
         }
-
         View view = inflater.inflate(R.layout.fragment_steps, container, false);
         ButterKnife.bind(this, view);
+        return view;
+    }
 
-        step = getArguments().getParcelable(EXTRA_STEP);
-
-        String videoUrl = RecipeUtils.getVideoUrl(step);
-
-        if (!TextUtils.isEmpty(videoUrl)) {
-            playerView.setVisibility(View.VISIBLE);
-            player.play(Uri.parse(videoUrl));
-            playerView.setPlayer(player.getPlayer());
-            if (!playWhenReady) player.getPlayer().setPlayWhenReady(playWhenReady);
-        } else if (!TextUtils.isEmpty(step.getThumbnailURL())) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Set the thumbnail image if it exists.
+        if (!TextUtils.isEmpty(step.getThumbnailURL())) {
             thumbnailImage.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.GONE);
             GlideApp.with(getActivity())
                     .load(step.getThumbnailURL())
                     .into(thumbnailImage);
         }
-
+        // Set the description
         if (shortDescText != null) {
             shortDescText.setText(step.getShortDescription());
             if (!TextUtils.equals(step.getShortDescription(), step.getDescription())) {
@@ -126,19 +139,10 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
                 if (RecipeUtils.isIntoStep(step)) shortDescText.setVisibility(View.GONE);
             }
         }
-
+        // Set the player to fullscreen if we are in landscape mode on a phone
         if (!isTablet && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             makePlayerFullscreen();
         }
-
-        return view;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        seekPos = player.getPlayer().getCurrentPosition();
-        playWhenReady = player.getPlayer().getPlayWhenReady();
     }
 
     @Override
@@ -153,13 +157,49 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
         mediaSession.setActive(true);
         if (playerView.getPlayer() == null) {
             playerView.setPlayer(player.getPlayer());
-            player.seekTo(seekPos);
         }
     }
 
     @Override
     public void onPause(Uri uri) {
         mediaSession.setActive(false);
+    }
+
+    private void initializePlayer() {
+        if (player == null) {
+            player = new MediaPlayer(getActivity(), this);
+            mediaSession = new MediaSessionCompat(getContext(), TAG);
+            mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            mediaSession.setMediaButtonReceiver(null);
+            PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                    .setActions(PlaybackStateCompat.ACTION_PLAY |
+                            PlaybackStateCompat.ACTION_PAUSE |
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                            PlaybackStateCompat.ACTION_PLAY_PAUSE);
+            mediaSession.setPlaybackState(stateBuilder.build());
+            mediaSession.setCallback(player.getCallback());
+        }
+
+        String videoUrl = step.getVideoURL();
+        if (!TextUtils.isEmpty(videoUrl)) {
+            playerView.setVisibility(View.VISIBLE);
+            player.play(Uri.parse(videoUrl));
+            playerView.setPlayer(player.getPlayer());
+            player.seekTo(seekPos);
+            if (!playWhenReady) player.getPlayer().setPlayWhenReady(false);
+        }
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            // Save the resume position
+            seekPos = player.getPlayer().getCurrentPosition();
+            playWhenReady = player.getPlayer().getPlayWhenReady();
+            // Cleanup
+            player.stop();
+            player = null;
+        }
     }
 
     private void makePlayerFullscreen() {
