@@ -91,6 +91,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     @Override
     public void onStop() {
         super.onStop();
+        updatePlayerState();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             releasePlayer();
         }
@@ -99,6 +100,7 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
     @Override
     public void onPause() {
         super.onPause();
+        updatePlayerState();
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
             releasePlayer();
         }
@@ -191,12 +193,16 @@ public class StepsFragment extends Fragment implements MediaPlayer.Listener {
         }
     }
 
-    private void releasePlayer() {
+    private void updatePlayerState() {
         if (player != null) {
-            // Save the resume position
             seekPos = player.getPlayer().getCurrentPosition();
             playWhenReady = player.getPlayer().getPlayWhenReady();
-            // Cleanup
+        }
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            updatePlayerState();
             player.stop();
             player = null;
         }
